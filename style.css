@@ -1,0 +1,10 @@
+body{
+  
+}
+.selected {
+    border: blue;
+}
+li {
+    display: block;
+    
+}
