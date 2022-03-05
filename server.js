@@ -1,11 +1,31 @@
 const express = require('express')
 const app = express()
-const db = require('./db')
+const {db, Food} = require('./db')
 const path = require('path')
 
 app.get('/', (req, res)=> res.sendFile(path.join(__dirname, 'index.html')))
 //app.use('/dist', express.static(path.join(__dirname, 'dist')))
 
+app.get('/api/foods', async(req, res, next) => {
+    try{
+        const foods = await Food.findAll()
+        res.send(foods)
+
+    }catch(ex){
+        next(ex)
+    }
+})
+
+app.delete('/api/foods/:id', async(req, res, next) => {
+    try{
+        const food = await Food.findByPk(req.params.id)
+        await food.destroy(204)
+        res.sendStatus(204)
+        
+    }catch(ex){
+        next(ec)
+    }
+})
 
 const init = async() => {
     try{
