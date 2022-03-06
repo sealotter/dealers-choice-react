@@ -4,11 +4,13 @@ const {db, Food} = require('./db')
 const path = require('path')
 
 app.get('/', (req, res)=> res.sendFile(path.join(__dirname, 'index.html')))
+
 //app.use('/dist', express.static(path.join(__dirname, 'dist')))
 
 app.get('/api/foods', async(req, res, next) => {
     try{
         const foods = await Food.findAll()
+        console.log(foods.length)
         res.send(foods)
 
     }catch(ex){
@@ -19,11 +21,11 @@ app.get('/api/foods', async(req, res, next) => {
 app.delete('/api/foods/:id', async(req, res, next) => {
     try{
         const food = await Food.findByPk(req.params.id)
-        await food.destroy(204)
+        await food.destroy()
         res.sendStatus(204)
         
     }catch(ex){
-        next(ec)
+        next(ex)
     }
 })
 

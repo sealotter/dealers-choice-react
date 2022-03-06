@@ -1,16 +1,86 @@
+
+<!DOCTYPE html>
 <html>
   <head>
     <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
      <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.0/axios.min.js"
+      integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"></script>
+     
+     
+     <title>Stranded</title>
+     <style>
+         body{
+             background-color: red;
+         }
+
+     </style>
+     
    
 
   </head>
   <body>
-    <div id='app'></div>
+    <div id='root'></div>
     <script type='text/babel'>
-      const root = document.querySelector('#main');
-      ReactDOM.render(<hr />, app);
+
+
+class App extends React.Component {
+  
+    constructor(){
+        super()
+        this.state = {
+            foods: []
+        }
+    }
+    async componentDidMount() {
+        const response = await axios.get('/api/foods')
+        const foods = response.data
+        this.setState({foods})
+    }
+    async sansFood(food){
+        await axios.delete(`/api/foods/${food.id}`)
+      
+        //getting the foods that weren't deleted (removing the deleted)
+        const foods = this.state.foods.filter(_food =>_food.id !== food.id)
+        this.setState({foods})
+        
+    }
+    render(){
+       
+        const foods = this.state.foods
+        if(foods.length === 3){
+            return <h1>Good luck living on those choices</h1>
+        }
+
+        return (
+            <div>
+                <h1>You're standed on an island and can only choose 3 foods to eat for a year</h1>
+                <h3> Which will it be? Select the items you DON'T want</h3>
+                
+                <ul>
+                    
+                    {foods.map(food => {
+                     
+                        return (
+                           <a href = '' onClick = { () => this.sansFood(food)} ><li>{food.name}</li> </a>
+                        )
+                    })
+                    }
+                    
+                </ul>
+
+                
+            </div>
+        )
+    }
+    
+}
+const root = document.querySelector('#root');
+ReactDOM.render(<App />, root);
+      
     </script>
   </body>
 </html>
